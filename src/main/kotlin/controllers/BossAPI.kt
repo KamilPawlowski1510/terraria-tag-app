@@ -12,13 +12,12 @@ class BossAPI {
         return bosses.add(boss)
     }
 
-    private fun validateIndex(index: Int) = index > 0 && index < bosses.size
+    private fun validateIndex(index: Int) = index >= 0 && index < bosses.size
 
-    fun deleteBoss(index: Int): Boolean {
+    fun deleteBoss(index: Int): Boss?{
         return if(validateIndex(index)){
             bosses.removeAt(index)
-            true
-        } else false
+        } else null
     }
 //Source: https://stackoverflow.com/questions/224311/cleanest-way-to-toggle-a-boolean-variable-in-java
     fun toggleBoss(boss: Boss) {
@@ -34,4 +33,13 @@ class BossAPI {
     fun listBosses(): String =
         if (bosses.isEmpty()) "No bosses stored"
         else bosses.joinToString(separator = "\n") { "$it" }
+
+    fun numberOfBosses(): Int = bosses.size
+
+    fun findBoss(index: Int): Boss? {
+        return if (validateIndex(index)) {
+            bosses[index]
+        } else null
+    }
+
 }
