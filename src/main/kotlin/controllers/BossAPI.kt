@@ -1,6 +1,7 @@
 package controllers
 
 import models.Boss
+import utils.Utilities
 import kotlin.collections.ArrayList
 
 
@@ -12,7 +13,9 @@ class BossAPI {
         return bosses.add(boss)
     }
 
-    private fun validateIndex(index: Int) = index >= 0 && index < bosses.size
+    private fun validateIndex(index: Int): Boolean {
+        return Utilities.validateIndex(index, bosses)
+    }
 
     fun deleteBoss(index: Int): Boss?{
         return if(validateIndex(index)){
