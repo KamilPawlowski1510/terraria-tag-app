@@ -48,9 +48,10 @@ object ScannerInput {
         var input: Int
         do {
             try {
-                print("$prompt [$min - $max]")
+                print("$prompt [$min - $max]: ")
                 input = Scanner(System.`in`).next().toInt()
-                if (input in min..max){ return input}
+                if (input in min..max) return input
+                else throw NumberFormatException()
             } catch (e: NumberFormatException) {
                 System.err.println("\tEnter a number within [$min - $max] please.")
             }

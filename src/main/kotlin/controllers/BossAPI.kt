@@ -35,7 +35,7 @@ class BossAPI {
 
     fun listBosses(): String =
         if (bosses.isEmpty()) "No bosses stored"
-        else bosses.joinToString(separator = "\n") { "$it" }
+        else bosses.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value.toString()}" }
 
     fun numberOfBosses(): Int = bosses.size
 
