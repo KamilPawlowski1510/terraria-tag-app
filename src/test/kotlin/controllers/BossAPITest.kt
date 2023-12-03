@@ -1,8 +1,15 @@
 package controllers
 
 import models.Boss
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import persistence.XMLSerializer
 import java.io.File
 
@@ -17,14 +24,14 @@ class BossAPITest {
     private var emptyBosses: BossAPI? = BossAPI(XMLSerializer(File("bosses2.xml")))
 
     @BeforeEach
-    fun setup(){
+    fun setup() {
         kingSlime = Boss("King Slime", true)
         eyeOfCthulhu = Boss("Eye of Cthulhu", true)
         eaterOfWorlds = Boss("Eater of Worlds", false)
         brainOfCthulhu = Boss("Brain of Cthulhu", false)
         queenBee = Boss("Queen Bee", false)
 
-        //adding 5 Bosses to the bosses API
+        // adding 5 Bosses to the bosses API
         populatedBosses!!.add(kingSlime!!)
         populatedBosses!!.add(eyeOfCthulhu!!)
         populatedBosses!!.add(eaterOfWorlds!!)
@@ -33,7 +40,7 @@ class BossAPITest {
     }
 
     @AfterEach
-    fun tearDown(){
+    fun tearDown() {
         kingSlime = null
         eyeOfCthulhu = null
         eaterOfWorlds = null

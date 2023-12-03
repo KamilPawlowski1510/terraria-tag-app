@@ -21,85 +21,95 @@ class WeaponAPI(serializerType: Serializer) {
         return Utilities.validateIndex(index, weapons)
     }
 
-    fun deleteWeapon(index: Int): Weapon?{
-        return if(validateIndex(index)){
+    fun deleteWeapon(index: Int): Weapon? {
+        return if (validateIndex(index)) {
             weapons.removeAt(index)
-        } else null
+        } else {
+            null
+        }
     }
 
     fun numberOfWeapons(): Int = weapons.size
 
-    fun numberOfAvailableWeapons(defeatedNames: ArrayList<String>): Int = weapons.filter{ it.checkRequirements(defeatedNames) }.size
+    fun numberOfAvailableWeapons(defeatedNames: ArrayList<String>): Int = weapons.filter { it.checkRequirements(defeatedNames) }.size
 
     fun findWeapon(index: Int): Weapon? {
         return if (validateIndex(index)) {
             weapons[index]
-        } else null
+        } else {
+            null
+        }
     }
 
-    fun searchWithTag(tag: String){
+    // Source for converting a list into an arraylist
+    // https://discuss.kotlinlang.org/t/how-to-convert-list-to-arraylist/945
+    fun searchWithTag(tag: String) {
         queryWeapons = ArrayList(queryWeapons.filter { it.checkTag(tag) })
     }
 
-    private fun searchAllWeapons(){
+    private fun searchAllWeapons() {
         queryWeapons = weapons
     }
 
-    private fun searchAvailableWeapons(defeatedNames: ArrayList<String>){
-        queryWeapons = ArrayList(weapons.filter {  it.checkRequirements(defeatedNames)})
+    private fun searchAvailableWeapons(defeatedNames: ArrayList<String>) {
+        queryWeapons = ArrayList(weapons.filter { it.checkRequirements(defeatedNames) })
     }
 
-    private fun searchUnavailableWeapons(defeatedNames: ArrayList<String>){
-        queryWeapons = ArrayList(weapons.filter {  !it.checkRequirements(defeatedNames)})
+    private fun searchUnavailableWeapons(defeatedNames: ArrayList<String>) {
+        queryWeapons = ArrayList(weapons.filter { !it.checkRequirements(defeatedNames) })
     }
 
-    private fun sortSearchByHighestDPS(){
+    // Source for sortByDescending
+    // https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/sorted-by-descending.html
+    private fun sortSearchByHighestDPS() {
         queryWeapons.sortByDescending { it.calculateDPS() }
     }
 
-    private fun sortSearchByLowestDPS(){
+    private fun sortSearchByLowestDPS() {
         queryWeapons.sortBy { it.calculateDPS() }
     }
 
-    fun search(defeatedNames: ArrayList<String>){
-
-        when(searchOptionAvailable){
-            1  -> searchAllWeapons()
-            2  -> searchAvailableWeapons(defeatedNames)
-            3  -> searchUnavailableWeapons(defeatedNames)
-            else  -> queryWeapons = weapons
+    fun search(defeatedNames: ArrayList<String>) {
+        when (searchOptionAvailable) {
+            1 -> searchAllWeapons()
+            2 -> searchAvailableWeapons(defeatedNames)
+            3 -> searchUnavailableWeapons(defeatedNames)
+            else -> queryWeapons = weapons
         }
 
-        when(searchOptionDPS){
-            1  -> sortSearchByHighestDPS()
-            2  -> sortSearchByLowestDPS()
-            else  -> sortSearchByHighestDPS()
+        when (searchOptionDPS) {
+            1 -> sortSearchByHighestDPS()
+            2 -> sortSearchByLowestDPS()
+            else -> sortSearchByHighestDPS()
         }
-
     }
 
     fun searchResults(): String =
-    if (weapons.isEmpty()) "No weapons stored"
-    else if (queryWeapons.isEmpty()) "No weapons match current settings"
-    else queryWeapons.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
+        if (weapons.isEmpty()) {
+            "No weapons stored"
+        } else if (queryWeapons.isEmpty()) {
+            "No weapons match current settings"
+        } else {
+            queryWeapons.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
+        }
 
-    fun setSearchOptionAvailable(option: Int){
+    fun setSearchOptionAvailable(option: Int) {
         searchOptionAvailable = option
     }
 
-    fun setSearchOptionDPS(option: Int){
+    fun setSearchOptionDPS(option: Int) {
         searchOptionDPS = option
     }
 
-    //Source for finding something with the highest value
-    //https://www.baeldung.com/kotlin/max-value-in-array
-    fun bestAvailableWeaponName(defeatedNames: ArrayList<String>): String{
-        return if(weapons.isEmpty())
+    // Source for finding something with the highest value
+    // https://www.baeldung.com/kotlin/max-value-in-array
+    fun bestAvailableWeaponName(defeatedNames: ArrayList<String>): String {
+        return if (weapons.isEmpty()) {
             "There are no weapons in the system"
-        else if(weapons.none { it.checkRequirements(defeatedNames) })
+        } else if (weapons.none { it.checkRequirements(defeatedNames) }) {
             "There are no available weapons"
-        else{
-            val best = weapons.filter {  it.checkRequirements(defeatedNames)}
+        } else {
+            val best = weapons.filter { it.checkRequirements(defeatedNames) }
                 .maxWith(compareBy { it.calculateDPS() })
             best.name
         }
@@ -115,8 +125,7 @@ class WeaponAPI(serializerType: Serializer) {
         serializer.write(weapons)
     }
 
-    fun reset(){
+    fun reset() {
         weapons.clear()
     }
-
 }
