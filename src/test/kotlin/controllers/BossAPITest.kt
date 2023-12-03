@@ -3,6 +3,8 @@ package controllers
 import models.Boss
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
+import persistence.XMLSerializer
+import java.io.File
 
 class BossAPITest {
 
@@ -11,8 +13,8 @@ class BossAPITest {
     private var eaterOfWorlds: Boss? = null
     private var brainOfCthulhu: Boss? = null
     private var queenBee: Boss? = null
-    private var populatedBosses: BossAPI? = BossAPI()
-    private var emptyBosses: BossAPI? = BossAPI()
+    private var populatedBosses: BossAPI? = BossAPI(XMLSerializer(File("bosses1.xml")))
+    private var emptyBosses: BossAPI? = BossAPI(XMLSerializer(File("bosses2.xml")))
 
     @BeforeEach
     fun setup(){

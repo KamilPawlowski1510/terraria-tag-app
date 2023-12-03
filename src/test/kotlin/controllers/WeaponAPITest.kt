@@ -2,6 +2,8 @@ package controllers
 
 import models.Weapon
 import org.junit.jupiter.api.*
+import persistence.XMLSerializer
+import java.io.File
 
 class WeaponAPITest {
 
@@ -11,8 +13,8 @@ class WeaponAPITest {
     private var iceBoomerang: Weapon? = null
     private var terragrim: Weapon? = null
     private var defeatedNames: ArrayList<String>? = ArrayList()
-    private var populatedWeapons: WeaponAPI? = WeaponAPI()
-    private var emptyWeapons: WeaponAPI? = WeaponAPI()
+    private var populatedWeapons: WeaponAPI? = WeaponAPI(XMLSerializer(File("weapons1.xml")))
+    private var emptyWeapons: WeaponAPI? = WeaponAPI(XMLSerializer(File("weapons2.xml")))
 //"Eye of Cthulhu", "Huh"
     @BeforeEach
     fun setup(){
