@@ -1,9 +1,13 @@
 package controllers
 
 import models.Weapon
+import persistence.Serializer
 import utils.Utilities
 
-class WeaponAPI {
+class WeaponAPI(serializerType: Serializer) {
+
+    private var serializer: Serializer = serializerType
+
     private var weapons = ArrayList<Weapon>()
     private var queryWeapons = ArrayList<Weapon>()
     private var searchOptionAvailable = 2
@@ -103,6 +107,16 @@ class WeaponAPI {
                 .maxWith(compareBy { it.calculateDPS() })
             best.name
         }
+    }
+
+    @Throws(Exception::class)
+    fun load() {
+        weapons = serializer.read() as ArrayList<Weapon>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(weapons)
     }
 
 }

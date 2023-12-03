@@ -9,8 +9,8 @@ import kotlin.system.exitProcess
 
 private val bossAPI = BossAPI(XMLSerializer(File("bosses.xml")))
 private var defeatedNames = ArrayList<String>()
-private val weaponAPI = WeaponAPI()
-//private val bossAPI = BossAPI(XMLSerializer(File("bosses.xml")))
+private val weaponAPI = WeaponAPI(XMLSerializer(File("weapons.xml")))
+//private val weaponAPI = weaponAPI(XMLSerializer(File("weapons.xml")))
 
 fun main(args: Array<String>) {
     defaultBosses()
@@ -46,7 +46,7 @@ fun mainMenu() : Int {
          > |   0) Exit                         
          > -------------------------------------
          > ==>> """.trimMargin(">"))
-    return ScannerInput.readNextInt("Please select an option",0, 4)
+    return ScannerInput.readNextInt("Please select an option",0, 6)
 }
 
 fun runMenu() {
@@ -56,8 +56,10 @@ fun runMenu() {
         when (option) {
             1  -> defeatedNames = runBossMenu()
             2  -> runWeaponMenu()
-            3  -> save()
-            4  -> load()
+            3  -> saveBosses()
+            4  -> loadBosses()
+            5  -> saveWeapons()
+            6  -> loadWeapons()
             0  -> exitApp()
             else -> println("Invalid option entered: $option")
         }
@@ -179,7 +181,7 @@ fun defaultWeapons(){
     weaponAPI.add(Weapon("Terragrim", 17, 4, 25, arrayListOf("melee", "other", "forest", "surface"), ArrayList<String>()))
 }
 
-fun save() {
+fun saveBosses() {
     try {
         bossAPI.store()
     } catch (e: Exception) {
@@ -187,9 +189,25 @@ fun save() {
     }
 }
 
-fun load() {
+fun loadBosses() {
     try {
         bossAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+
+fun saveWeapons() {
+    try {
+        weaponAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun loadWeapons() {
+    try {
+        weaponAPI.load()
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
