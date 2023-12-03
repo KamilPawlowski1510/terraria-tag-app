@@ -5,7 +5,6 @@ import persistence.Serializer
 import utils.Utilities
 import kotlin.collections.ArrayList
 
-
 class BossAPI(serializerType: Serializer) {
 
     private var serializer: Serializer = serializerType
@@ -20,25 +19,31 @@ class BossAPI(serializerType: Serializer) {
         return Utilities.validateIndex(index, bosses)
     }
 
-    fun deleteBoss(index: Int): Boss?{
-        return if(validateIndex(index)){
+    fun deleteBoss(index: Int): Boss? {
+        return if (validateIndex(index)) {
             bosses.removeAt(index)
-        } else null
+        } else {
+            null
+        }
     }
-//Source: https://stackoverflow.com/questions/224311/cleanest-way-to-toggle-a-boolean-variable-in-java
+
+// Source: https://stackoverflow.com/questions/224311/cleanest-way-to-toggle-a-boolean-variable-in-java
     fun toggleBoss(boss: Boss) {
         boss.defeated = !boss.defeated
     }
 
-    fun defeatedList(): ArrayList<String>{
+    fun defeatedList(): ArrayList<String> {
         val defeatedNames = ArrayList<String>()
         bosses.filter { it.defeated }.forEach { defeatedNames.add(it.name) }
         return defeatedNames
     }
 
     fun listBosses(): String =
-        if (bosses.isEmpty()) "No bosses stored"
-        else bosses.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value.toString()}" }
+        if (bosses.isEmpty()) {
+            "No bosses stored"
+        } else {
+            bosses.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
+        }
 
     fun numberOfBosses(): Int = bosses.size
 
@@ -47,22 +52,26 @@ class BossAPI(serializerType: Serializer) {
     fun findBoss(index: Int): Boss? {
         return if (validateIndex(index)) {
             bosses[index]
-        } else null
+        } else {
+            null
+        }
     }
 
-    fun generateNextBoss(){
+    fun generateNextBoss() {
         bosses.forEach { it.next = false }
-        val next = bosses.find{!it.defeated}
-        if (next is Boss){
+        val next = bosses.find { !it.defeated }
+        if (next is Boss) {
             next.next = true
         }
     }
 
-    fun getNextBossName(): String{
-        val next = bosses.find{it.next}
-        return if (next is Boss){
+    fun getNextBossName(): String {
+        val next = bosses.find { it.next }
+        return if (next is Boss) {
             next.name
-        } else "You did it!"
+        } else {
+            "You did it!"
+        }
     }
 
     @Throws(Exception::class)
@@ -75,8 +84,7 @@ class BossAPI(serializerType: Serializer) {
         serializer.write(bosses)
     }
 
-    fun reset(){
+    fun reset() {
         bosses.clear()
     }
-
 }

@@ -1,7 +1,16 @@
 package controllers
 
 import models.Weapon
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import persistence.XMLSerializer
+import java.io.File
 
 class WeaponAPITest {
 
@@ -11,11 +20,12 @@ class WeaponAPITest {
     private var iceBoomerang: Weapon? = null
     private var terragrim: Weapon? = null
     private var defeatedNames: ArrayList<String>? = ArrayList()
-    private var populatedWeapons: WeaponAPI? = WeaponAPI()
-    private var emptyWeapons: WeaponAPI? = WeaponAPI()
-//"Eye of Cthulhu", "Huh"
+    private var populatedWeapons: WeaponAPI? = WeaponAPI(XMLSerializer(File("weapons1.xml")))
+    private var emptyWeapons: WeaponAPI? = WeaponAPI(XMLSerializer(File("weapons2.xml")))
+
+// "Eye of Cthulhu", "Huh"
     @BeforeEach
-    fun setup(){
+    fun setup() {
         nightsEdge = Weapon("Night's Edge", 40, 4, 25, arrayListOf("melee", "broadsword"), arrayListOf("Eater of Worlds", "Skeletron"))
         valor = Weapon("Valor", 28, 4, 25, arrayListOf("melee", "yo-yo", "dungeon", "underground"), arrayListOf("Skeletron"))
         stormSpear = Weapon("Storm Spear", 14, 4, 28, arrayListOf("melee", "spear", "desert", "underground"), ArrayList<String>())
@@ -24,7 +34,7 @@ class WeaponAPITest {
 
         defeatedNames = arrayListOf("Skeletron")
 
-        //adding 5 Weapons to the weapons API
+        // adding 5 Weapons to the weapons API
         populatedWeapons!!.add(nightsEdge!!)
         populatedWeapons!!.add(valor!!)
         populatedWeapons!!.add(stormSpear!!)
@@ -33,7 +43,7 @@ class WeaponAPITest {
     }
 
     @AfterEach
-    fun tearDown(){
+    fun tearDown() {
         nightsEdge = null
         valor = null
         stormSpear = null
@@ -49,19 +59,19 @@ class WeaponAPITest {
         @Test
         fun `adding a Weapon to a populated list adds to ArrayList`() {
             val newWeapon = Weapon("Bee Keeper", 30, 4, 20, arrayListOf("melee", "broadsword", "jungle", "underground"), arrayListOf("Queen Bee"))
-            Assertions.assertEquals(5, populatedWeapons!!.numberOfWeapons())
-            Assertions.assertTrue(populatedWeapons!!.add(newWeapon))
-            Assertions.assertEquals(6, populatedWeapons!!.numberOfWeapons())
-            Assertions.assertEquals(newWeapon, populatedWeapons!!.findWeapon(populatedWeapons!!.numberOfWeapons() - 1))
+            assertEquals(5, populatedWeapons!!.numberOfWeapons())
+            assertTrue(populatedWeapons!!.add(newWeapon))
+            assertEquals(6, populatedWeapons!!.numberOfWeapons())
+            assertEquals(newWeapon, populatedWeapons!!.findWeapon(populatedWeapons!!.numberOfWeapons() - 1))
         }
 
         @Test
         fun `adding a Weapon to an empty list adds to ArrayList`() {
             val newWeapon = Weapon("Bee Keeper", 30, 4, 20, arrayListOf("melee", "broadsword", "jungle", "underground"), arrayListOf("Queen Bee"))
-            Assertions.assertEquals(0, emptyWeapons!!.numberOfWeapons())
-            Assertions.assertTrue(emptyWeapons!!.add(newWeapon))
-            Assertions.assertEquals(1, emptyWeapons!!.numberOfWeapons())
-            Assertions.assertEquals(newWeapon, emptyWeapons!!.findWeapon(emptyWeapons!!.numberOfWeapons() - 1))
+            assertEquals(0, emptyWeapons!!.numberOfWeapons())
+            assertTrue(emptyWeapons!!.add(newWeapon))
+            assertEquals(1, emptyWeapons!!.numberOfWeapons())
+            assertEquals(newWeapon, emptyWeapons!!.findWeapon(emptyWeapons!!.numberOfWeapons() - 1))
         }
     }
 
@@ -70,18 +80,18 @@ class WeaponAPITest {
 
         @Test
         fun `deleting a Weapon that does not exist, returns null`() {
-            Assertions.assertNull(emptyWeapons!!.deleteWeapon(0))
-            Assertions.assertNull(populatedWeapons!!.deleteWeapon(-1))
-            Assertions.assertNull(populatedWeapons!!.deleteWeapon(5))
+            assertNull(emptyWeapons!!.deleteWeapon(0))
+            assertNull(populatedWeapons!!.deleteWeapon(-1))
+            assertNull(populatedWeapons!!.deleteWeapon(5))
         }
 
         @Test
         fun `deleting a weapon that exists delete and returns deleted object`() {
-            Assertions.assertEquals(5, populatedWeapons!!.numberOfWeapons())
-            Assertions.assertEquals(terragrim, populatedWeapons!!.deleteWeapon(4))
-            Assertions.assertEquals(4, populatedWeapons!!.numberOfWeapons())
-            Assertions.assertEquals(nightsEdge, populatedWeapons!!.deleteWeapon(0))
-            Assertions.assertEquals(3, populatedWeapons!!.numberOfWeapons())
+            assertEquals(5, populatedWeapons!!.numberOfWeapons())
+            assertEquals(terragrim, populatedWeapons!!.deleteWeapon(4))
+            assertEquals(4, populatedWeapons!!.numberOfWeapons())
+            assertEquals(nightsEdge, populatedWeapons!!.deleteWeapon(0))
+            assertEquals(3, populatedWeapons!!.numberOfWeapons())
         }
     }
 
@@ -90,8 +100,8 @@ class WeaponAPITest {
 
         @Test
         fun numberOfWeaponsCalculatedCorrectly() {
-            Assertions.assertEquals(5, populatedWeapons!!.numberOfWeapons())
-            Assertions.assertEquals(0, emptyWeapons!!.numberOfWeapons())
+            assertEquals(5, populatedWeapons!!.numberOfWeapons())
+            assertEquals(0, emptyWeapons!!.numberOfWeapons())
         }
     }
 
@@ -99,21 +109,21 @@ class WeaponAPITest {
     inner class FindWeapon {
         @Test
         fun `a list with no weapons will return null regardless of index`() {
-            Assertions.assertNull(emptyWeapons!!.findWeapon(-5))
-            Assertions.assertNull(emptyWeapons!!.findWeapon(0))
-            Assertions.assertNull(emptyWeapons!!.findWeapon(20))
+            assertNull(emptyWeapons!!.findWeapon(-5))
+            assertNull(emptyWeapons!!.findWeapon(0))
+            assertNull(emptyWeapons!!.findWeapon(20))
         }
 
         @Test
         fun `a list with weapons will only return a weapon with a valid index`() {
-            Assertions.assertEquals(5, populatedWeapons!!.numberOfWeapons())
-            Assertions.assertNull(populatedWeapons!!.findWeapon(-1))
-            Assertions.assertNotNull(populatedWeapons!!.findWeapon(0))
-            Assertions.assertNotNull(populatedWeapons!!.findWeapon(1))
-            Assertions.assertNotNull(populatedWeapons!!.findWeapon(2))
-            Assertions.assertNotNull(populatedWeapons!!.findWeapon(3))
-            Assertions.assertNotNull(populatedWeapons!!.findWeapon(4))
-            Assertions.assertNull(populatedWeapons!!.findWeapon(5))
+            assertEquals(5, populatedWeapons!!.numberOfWeapons())
+            assertNull(populatedWeapons!!.findWeapon(-1))
+            assertNotNull(populatedWeapons!!.findWeapon(0))
+            assertNotNull(populatedWeapons!!.findWeapon(1))
+            assertNotNull(populatedWeapons!!.findWeapon(2))
+            assertNotNull(populatedWeapons!!.findWeapon(3))
+            assertNotNull(populatedWeapons!!.findWeapon(4))
+            assertNull(populatedWeapons!!.findWeapon(5))
         }
     }
 }

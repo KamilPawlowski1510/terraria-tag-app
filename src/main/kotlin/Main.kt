@@ -17,8 +17,9 @@ fun main(args: Array<String>) {
     runMenu()
 }
 
-fun mainMenu() : Int {
-    println(""" 
+fun mainMenu(): Int {
+    println(
+        """ 
          > ⠀         ⠀⢀⣴⣶⣤⣾⣿⣿⣦⣶⡄⠀⠀⠀
          > ⠀         ⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀
          >          ⠀⠰⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀
@@ -46,8 +47,9 @@ fun mainMenu() : Int {
          > -------------------------------------
          > |   0) Exit                         
          > -------------------------------------
-         > ==>> """.trimMargin(">"))
-    return ScannerInput.readNextInt("Please select an option",0, 6)
+         > ==>> """.trimMargin(">")
+    )
+    return ScannerInput.readNextInt("Please select an option", 0, 3)
 }
 
 fun runMenu() {
@@ -55,19 +57,20 @@ fun runMenu() {
     do {
         val option = mainMenu()
         when (option) {
-            1  -> defeatedNames = runBossMenu()
-            2  -> runWeaponMenu()
-            3  -> resetData()
-            0  -> exitApp()
+            1 -> defeatedNames = runBossMenu()
+            2 -> runWeaponMenu()
+            3 -> resetData()
+            0 -> exitApp()
             else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
 
-fun bossMenu() : Int {
+fun bossMenu(): Int {
     bossAPI.generateNextBoss()
     println(bossAPI.listBosses())
-    println(""" 
+    println(
+        """ 
          > -------------------------------------
          > |          Boss Options             |
          > -------------------------------------
@@ -75,7 +78,8 @@ fun bossMenu() : Int {
          > -------------------------------------
          > |   0) Exit                         |
          > -------------------------------------
-         > ==>> """.trimMargin(">"))
+         > ==>> """.trimMargin(">")
+    )
     return ScannerInput.readNextInt("Please select an option", 0, 1)
 }
 
@@ -83,33 +87,31 @@ fun runBossMenu(): ArrayList<String> {
     do {
         val option = bossMenu()
         when (option) {
-            1  -> changeBoss()
-            0  -> return bossAPI.defeatedList()
+            1 -> changeBoss()
+            0 -> return bossAPI.defeatedList()
             else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
 
-fun changeBoss(){
-    if(bossAPI.numberOfBosses() == 0){
+fun changeBoss() {
+    if (bossAPI.numberOfBosses() == 0) {
         println("There are no bosses in the system to change")
-    }
-    else{
+    } else {
         val id = ScannerInput.readNextInt("Select the boss which you want to change or '0' to cancel", 0, bossAPI.numberOfBosses())
-        if(id == 0){
+        if (id == 0) {
             return
-        }
-        else{
+        } else {
             bossAPI.toggleBoss(bossAPI.findBoss(id - 1)!!)
             saveBosses()
         }
     }
 }
 
-
-fun weaponMenu() : Int {
+fun weaponMenu(): Int {
     println(weaponAPI.searchResults())
-    println(""" 
+    println(
+        """ 
          > -------------------------------------
          > |          Weapon Options           |
          > -------------------------------------
@@ -118,50 +120,55 @@ fun weaponMenu() : Int {
          > -------------------------------------
          > |   0) Exit                         |
          > -------------------------------------
-         > ==>> """.trimMargin(">"))
+         > ==>> """.trimMargin(">")
+    )
     return ScannerInput.readNextInt("Please select an option", 0, 2)
 }
 
-fun runWeaponMenu(){
+fun runWeaponMenu() {
     updateResults()
     do {
         val option = weaponMenu()
         when (option) {
-            1  -> updateSearchOptions()
-            2  -> searchByTag()
-            0  -> return
+            1 -> updateSearchOptions()
+            2 -> searchByTag()
+            0 -> return
             else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
 
-fun updateSearchOptions(){
-    println(""" 
+fun updateSearchOptions() {
+    println(
+        """ 
          > Which weapons would you like to see?
          > 1: All Weapons
          > 2: Available Weapons
          > 3: Unavailable Weapons
-         > ==>> """.trimMargin(">"))
+         > ==>> """.trimMargin(">")
+    )
     weaponAPI.setSearchOptionAvailable(ScannerInput.readNextInt("Please select an option", 1, 3))
-    println(""" 
+    println(
+        """ 
          > How should the weapons be ordered?
          > 1: By Highest DPS
          > 2: By Lowest DPS
-         > ==>> """.trimMargin(">"))
+         > ==>> """.trimMargin(">")
+    )
     weaponAPI.setSearchOptionDPS(ScannerInput.readNextInt("Please select an option", 1, 2))
     updateResults()
 }
 
-fun searchByTag(){
+fun searchByTag() {
     updateResults()
     weaponAPI.searchWithTag(ScannerInput.readNextLine("Please enter a tag: "))
 }
 
-fun updateResults(){
+fun updateResults() {
     weaponAPI.search(defeatedNames)
 }
 
-fun addDefaultBosses(){
+fun addDefaultBosses() {
     bossAPI.add(Boss("King Slime", next = true))
     bossAPI.add(Boss("Eye of Cthulhu"))
     bossAPI.add(Boss("Eater of Worlds"))
@@ -173,7 +180,7 @@ fun addDefaultBosses(){
     saveBosses()
 }
 
-fun addDefaultWeapons(){
+fun addDefaultWeapons() {
     weaponAPI.add(Weapon("Night's Edge", 40, 4, 25, arrayListOf("melee", "broadsword"), arrayListOf("Eater of Worlds", "Skeletron")))
     weaponAPI.add(Weapon("Valor", 28, 4, 25, arrayListOf("melee", "yo-yo", "dungeon", "underground"), arrayListOf("Skeletron")))
     weaponAPI.add(Weapon("Storm Spear", 14, 4, 28, arrayListOf("melee", "spear", "desert", "underground"), ArrayList<String>()))
@@ -221,25 +228,31 @@ fun loadWeapons() {
     }
 }
 
-fun checkBossesExist(){
-    if (File("bosses.xml").exists()) loadBosses()
-    else addDefaultBosses()
-
+// Source for file.exits
+// https://www.tutorialkart.com/kotlin/kotlin-check-if-file-exists/#gsc.tab=0
+fun checkBossesExist() {
+    if (File("bosses.xml").exists()) {
+        loadBosses()
+    } else {
+        addDefaultBosses()
+    }
 }
 
-fun checkWeaponsExist(){
-    if (File("weapons.xml").exists()) loadWeapons()
-    else addDefaultWeapons()
-
+fun checkWeaponsExist() {
+    if (File("weapons.xml").exists()) {
+        loadWeapons()
+    } else {
+        addDefaultWeapons()
+    }
 }
 
-fun resetData(){
+fun resetData() {
     bossAPI.reset()
     weaponAPI.reset()
     addDefaultBosses()
     addDefaultWeapons()
 }
 
-fun exitApp(){
+fun exitApp() {
     exitProcess(0)
 }

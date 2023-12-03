@@ -43,6 +43,8 @@ object ScannerInput {
      * @param max  The largest permitted value to be entered
      * @return The number read from the user and verified as an int.
      */
+    // Source for throwing an exception
+    // https://www.baeldung.com/kotlin/exception-handling#:~:text=Kotlin%20Exceptions,-In%20Kotlin%2C%20there&text=All%20exception%20classes%20descend%20from,a%20controversial%20feature%20in%20Java.
     @JvmStatic
     fun readNextInt(prompt: String?, min: Int, max: Int): Int {
         var input: Int
@@ -50,8 +52,11 @@ object ScannerInput {
             try {
                 print("$prompt [$min - $max]: ")
                 input = Scanner(System.`in`).next().toInt()
-                if (input in min..max) return input
-                else throw NumberFormatException()
+                if (input in min..max) {
+                    return input
+                } else {
+                    throw NumberFormatException()
+                }
             } catch (e: NumberFormatException) {
                 System.err.println("\tEnter a number within [$min - $max] please.")
             }
