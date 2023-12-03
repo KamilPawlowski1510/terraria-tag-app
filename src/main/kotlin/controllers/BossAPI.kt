@@ -39,10 +39,27 @@ class BossAPI {
 
     fun numberOfBosses(): Int = bosses.size
 
+    fun numberOfDefeatedBosses(): Int = bosses.count { it.defeated }
+
     fun findBoss(index: Int): Boss? {
         return if (validateIndex(index)) {
             bosses[index]
         } else null
+    }
+
+    fun generateNextBoss(){
+        bosses.forEach { it.next = false }
+        val next = bosses.find{!it.defeated}
+        if (next is Boss){
+            next.next = true
+        }
+    }
+
+    fun getNextBossName(): String{
+        val next = bosses.find{it.next}
+        return if (next is Boss){
+            next.name
+        } else "You did it!"
     }
 
 }
