@@ -54,11 +54,11 @@ class WeaponAPI(serializerType: Serializer) {
     }
 
     private fun sortSearchByHighestDPS(){
-        queryWeapons.sortBy { it.calculateDPS() }
+        queryWeapons.sortByDescending { it.calculateDPS() }
     }
 
     private fun sortSearchByLowestDPS(){
-        queryWeapons.sortByDescending { it.calculateDPS() }
+        queryWeapons.sortBy { it.calculateDPS() }
     }
 
     fun search(defeatedNames: ArrayList<String>){
@@ -82,10 +82,6 @@ class WeaponAPI(serializerType: Serializer) {
     if (weapons.isEmpty()) "No weapons stored"
     else if (queryWeapons.isEmpty()) "No weapons match current settings"
     else queryWeapons.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
-
-    fun numberOfQuery(){
-        queryWeapons.size
-    }
 
     fun setSearchOptionAvailable(option: Int){
         searchOptionAvailable = option
@@ -117,6 +113,10 @@ class WeaponAPI(serializerType: Serializer) {
     @Throws(Exception::class)
     fun store() {
         serializer.write(weapons)
+    }
+
+    fun reset(){
+        weapons.clear()
     }
 
 }

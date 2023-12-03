@@ -75,4 +75,8 @@ class BossAPI(serializerType: Serializer) {
         serializer.write(bosses)
     }
 
+    fun reset(){
+        bosses.clear()
+    }
+
 }
