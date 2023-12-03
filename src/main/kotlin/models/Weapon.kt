@@ -7,8 +7,9 @@ data class Weapon(var name: String, var damage: Int, var criticalChance: Int, va
     }
 
     override fun toString(): String {
-        return """$name (${calculateDPS()})
+        return """$name, ${calculateDPS()} DPS
                   |Damage: $damage, Use Time: $useTime, Critical Strike Chance: $criticalChance%
+                  |Tags: ${tags.toString()}
                   |""".trimMargin()
     }
 

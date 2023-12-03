@@ -47,7 +47,7 @@ fun mainMenu() : Int {
          > |   0) Exit                         
          > -------------------------------------
          > ==>> """.trimMargin(">"))
-    return ScannerInput.readNextInt("Please select an option",0, 6)
+    return ScannerInput.readNextInt("Please select an option",0, 3)
 }
 
 fun runMenu() {
