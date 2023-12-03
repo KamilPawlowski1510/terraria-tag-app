@@ -2,12 +2,15 @@ import controllers.BossAPI
 import controllers.WeaponAPI
 import models.Boss
 import models.Weapon
+import persistence.XMLSerializer
 import utils.ScannerInput
+import java.io.File
 import kotlin.system.exitProcess
 
-private val bossAPI = BossAPI()
+private val bossAPI = BossAPI(XMLSerializer(File("bosses.xml")))
 private var defeatedNames = ArrayList<String>()
 private val weaponAPI = WeaponAPI()
+//private val bossAPI = BossAPI(XMLSerializer(File("bosses.xml")))
 
 fun main(args: Array<String>) {
     defaultBosses()
@@ -37,12 +40,13 @@ fun mainMenu() : Int {
          > |      Next Boss: ${bossAPI.getNextBossName()}
          > -------------------------------------
          > |   2) Weapons (${weaponAPI.numberOfAvailableWeapons(defeatedNames)}/${weaponAPI.numberOfWeapons()} Available)
-         > |      Best Weapon Available: ${weaponAPI.bestAvailableWeaponName(defeatedNames)}
+         > |      Best Weapon Available: 
+         > |          ${weaponAPI.bestAvailableWeaponName(defeatedNames)}
          > -------------------------------------
          > |   0) Exit                         
          > -------------------------------------
          > ==>> """.trimMargin(">"))
-    return ScannerInput.readNextInt("Please select an option",0, 2)
+    return ScannerInput.readNextInt("Please select an option",0, 4)
 }
 
 fun runMenu() {
@@ -52,6 +56,8 @@ fun runMenu() {
         when (option) {
             1  -> defeatedNames = runBossMenu()
             2  -> runWeaponMenu()
+            3  -> save()
+            4  -> load()
             0  -> exitApp()
             else -> println("Invalid option entered: $option")
         }
@@ -171,6 +177,22 @@ fun defaultWeapons(){
     weaponAPI.add(Weapon("Storm Spear", 14, 4, 28, arrayListOf("melee", "spear", "desert", "underground"), ArrayList<String>()))
     weaponAPI.add(Weapon("Ice Boomerang", 21, 6, 20, arrayListOf("melee", "boomerang", "ice", "underground"), ArrayList<String>()))
     weaponAPI.add(Weapon("Terragrim", 17, 4, 25, arrayListOf("melee", "other", "forest", "surface"), ArrayList<String>()))
+}
+
+fun save() {
+    try {
+        bossAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        bossAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
 }
 
 fun exitApp(){

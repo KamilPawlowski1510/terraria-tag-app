@@ -1,11 +1,14 @@
 package controllers
 
 import models.Boss
+import persistence.Serializer
 import utils.Utilities
 import kotlin.collections.ArrayList
 
 
-class BossAPI {
+class BossAPI(serializerType: Serializer) {
+
+    private var serializer: Serializer = serializerType
 
     private var bosses = ArrayList<Boss>()
 
@@ -60,6 +63,16 @@ class BossAPI {
         return if (next is Boss){
             next.name
         } else "You did it!"
+    }
+
+    @Throws(Exception::class)
+    fun load() {
+        bosses = serializer.read() as ArrayList<Boss>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(bosses)
     }
 
 }
