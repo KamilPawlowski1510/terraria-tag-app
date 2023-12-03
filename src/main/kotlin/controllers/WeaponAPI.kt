@@ -55,7 +55,7 @@ class WeaponAPI() {
         queryWeapons.sortByDescending { it.calculateDPS() }
     }
 
-    fun searchOptions(defeatedNames: ArrayList<String>){
+    fun search(defeatedNames: ArrayList<String>){
 
         when(searchOptionAvailable){
             1  -> searchAllWeapons()
