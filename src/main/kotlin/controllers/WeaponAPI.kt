@@ -3,7 +3,7 @@ package controllers
 import models.Weapon
 import utils.Utilities
 
-class WeaponAPI() {
+class WeaponAPI {
     private var weapons = ArrayList<Weapon>()
     private var queryWeapons = ArrayList<Weapon>()
     private var searchOptionAvailable = 2
@@ -25,6 +25,8 @@ class WeaponAPI() {
 
     fun numberOfWeapons(): Int = weapons.size
 
+    fun numberOfAvailableWeapons(defeatedNames: ArrayList<String>): Int = weapons.filter{ it.checkRequirements(defeatedNames) }.size
+
     fun findWeapon(index: Int): Weapon? {
         return if (validateIndex(index)) {
             weapons[index]
@@ -35,23 +37,23 @@ class WeaponAPI() {
         queryWeapons = ArrayList(queryWeapons.filter { it.checkTag(tag) })
     }
 
-    fun searchAllWeapons(){
+    private fun searchAllWeapons(){
         queryWeapons = weapons
     }
 
-    fun searchAvailableWeapons(defeatedNames: ArrayList<String>){
+    private fun searchAvailableWeapons(defeatedNames: ArrayList<String>){
         queryWeapons = ArrayList(weapons.filter {  it.checkRequirements(defeatedNames)})
     }
 
-    fun searchUnavailableWeapons(defeatedNames: ArrayList<String>){
+    private fun searchUnavailableWeapons(defeatedNames: ArrayList<String>){
         queryWeapons = ArrayList(weapons.filter {  !it.checkRequirements(defeatedNames)})
     }
 
-    fun sortSearchByHighestDPS(){
+    private fun sortSearchByHighestDPS(){
         queryWeapons.sortBy { it.calculateDPS() }
     }
 
-    fun sortSearchByLowestDPS(){
+    private fun sortSearchByLowestDPS(){
         queryWeapons.sortByDescending { it.calculateDPS() }
     }
 
@@ -75,7 +77,7 @@ class WeaponAPI() {
     fun searchResults(): String =
     if (weapons.isEmpty()) "No weapons stored"
     else if (queryWeapons.isEmpty()) "No weapons match current settings"
-    else queryWeapons.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value.toString()}" }
+    else queryWeapons.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
 
     fun numberOfQuery(){
         queryWeapons.size
@@ -87,6 +89,20 @@ class WeaponAPI() {
 
     fun setSearchOptionDPS(option: Int){
         searchOptionDPS = option
+    }
+
+    //Source for finding something with the highest value
+    //https://www.baeldung.com/kotlin/max-value-in-array
+    fun bestAvailableWeaponName(defeatedNames: ArrayList<String>): String{
+        return if(weapons.isEmpty())
+            "There are no weapons in the system"
+        else if(weapons.none { it.checkRequirements(defeatedNames) })
+            "There are no available weapons"
+        else{
+            val best = weapons.filter {  it.checkRequirements(defeatedNames)}
+                .maxWith(compareBy { it.calculateDPS() })
+            best.name
+        }
     }
 
 }

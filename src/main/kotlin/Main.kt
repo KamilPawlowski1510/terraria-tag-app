@@ -36,7 +36,8 @@ fun mainMenu() : Int {
          > |   1) Bosses (${bossAPI.numberOfDefeatedBosses()}/${bossAPI.numberOfBosses()} Defeated)
          > |      Next Boss: ${bossAPI.getNextBossName()}
          > -------------------------------------
-         > |   2) Weapons                      
+         > |   2) Weapons (${weaponAPI.numberOfAvailableWeapons(defeatedNames)}/${weaponAPI.numberOfWeapons()} Available)
+         > |      Best Weapon Available: ${weaponAPI.bestAvailableWeaponName(defeatedNames)}
          > -------------------------------------
          > |   0) Exit                         
          > -------------------------------------
