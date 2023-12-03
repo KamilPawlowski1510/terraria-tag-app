@@ -7,16 +7,37 @@ import utils.ScannerInput
 import java.io.File
 import kotlin.system.exitProcess
 
+/**
+ * The Boss API instance for managing boss entities.
+ */
 private val bossAPI = BossAPI(XMLSerializer(File("bosses.xml")))
+
+/**
+ * List of defeated boss names.
+ */
 private var defeatedNames = ArrayList<String>()
+
+/**
+ * The Weapon API instance for managing weapon entities.
+ */
 private val weaponAPI = WeaponAPI(XMLSerializer(File("weapons.xml")))
 
+/**
+ * Main entry point of the program.
+ *
+ * @param args Command-line arguments.
+ */
 fun main(args: Array<String>) {
     checkBossesExist()
     checkWeaponsExist()
     runMenu()
 }
 
+/**
+ * Displays the main menu and reads user input.
+ *
+ * @return The selected option from the main menu.
+ */
 fun mainMenu(): Int {
     println(
         """ 
@@ -52,6 +73,9 @@ fun mainMenu(): Int {
     return ScannerInput.readNextInt("Please select an option", 0, 3)
 }
 
+/**
+ * Runs the main menu loop.
+ */
 fun runMenu() {
     bossAPI.generateNextBoss()
     do {
@@ -66,6 +90,11 @@ fun runMenu() {
     } while (true)
 }
 
+/**
+ * Displays the boss menu and reads user input.
+ *
+ * @return The list of defeated boss names.
+ */
 fun bossMenu(): Int {
     bossAPI.generateNextBoss()
     println(bossAPI.listBosses())
@@ -83,6 +112,11 @@ fun bossMenu(): Int {
     return ScannerInput.readNextInt("Please select an option", 0, 1)
 }
 
+/**
+ * Runs the boss menu loop.
+ *
+ * @return The list of defeated boss names.
+ */
 fun runBossMenu(): ArrayList<String> {
     do {
         val option = bossMenu()
@@ -94,6 +128,9 @@ fun runBossMenu(): ArrayList<String> {
     } while (true)
 }
 
+/**
+ * Changes the defeated status of a boss.
+ */
 fun changeBoss() {
     if (bossAPI.numberOfBosses() == 0) {
         println("There are no bosses in the system to change")
@@ -108,6 +145,11 @@ fun changeBoss() {
     }
 }
 
+/**
+ * Displays the weapon menu and reads user input.
+ *
+ * @return The selected option from the weapon menu.
+ */
 fun weaponMenu(): Int {
     println(weaponAPI.searchResults())
     println(
@@ -125,6 +167,9 @@ fun weaponMenu(): Int {
     return ScannerInput.readNextInt("Please select an option", 0, 2)
 }
 
+/**
+ * Runs the weapon menu loop.
+ */
 fun runWeaponMenu() {
     updateResults()
     do {
@@ -138,6 +183,9 @@ fun runWeaponMenu() {
     } while (true)
 }
 
+/**
+ * Updates the search options for weapons.
+ */
 fun updateSearchOptions() {
     println(
         """ 
@@ -159,15 +207,24 @@ fun updateSearchOptions() {
     updateResults()
 }
 
+/**
+ * Searches for weapons with a specific tag and updates the search results.
+ */
 fun searchByTag() {
     updateResults()
     weaponAPI.searchWithTag(ScannerInput.readNextLine("Please enter a tag: "))
 }
 
+/**
+ * Updates the weapon search results based on the current search criteria.
+ */
 fun updateResults() {
     weaponAPI.search(defeatedNames)
 }
 
+/**
+ * Adds default bosses to the Boss API.
+ */
 fun addDefaultBosses() {
     bossAPI.add(Boss("King Slime", next = true))
     bossAPI.add(Boss("Eye of Cthulhu"))
@@ -180,6 +237,9 @@ fun addDefaultBosses() {
     saveBosses()
 }
 
+/**
+ * Adds default weapons to the Weapon API.
+ */
 fun addDefaultWeapons() {
     weaponAPI.add(Weapon("Night's Edge", 40, 4, 25, arrayListOf("melee", "broadsword"), arrayListOf("Eater of Worlds", "Skeletron")))
     weaponAPI.add(Weapon("Valor", 28, 4, 25, arrayListOf("melee", "yo-yo", "dungeon", "underground"), arrayListOf("Skeletron")))
@@ -196,6 +256,9 @@ fun addDefaultWeapons() {
     saveWeapons()
 }
 
+/**
+ * Saves the current state of bosses to a file.
+ */
 fun saveBosses() {
     try {
         bossAPI.store()
@@ -204,6 +267,9 @@ fun saveBosses() {
     }
 }
 
+/**
+ * Loads the saved state of bosses from a file.
+ */
 fun loadBosses() {
     try {
         bossAPI.load()
@@ -212,6 +278,9 @@ fun loadBosses() {
     }
 }
 
+/**
+ * Saves the current state of weapons to a file.
+ */
 fun saveWeapons() {
     try {
         weaponAPI.store()
@@ -220,6 +289,9 @@ fun saveWeapons() {
     }
 }
 
+/**
+ * Loads the saved state of weapons from a file.
+ */
 fun loadWeapons() {
     try {
         weaponAPI.load()
@@ -230,6 +302,9 @@ fun loadWeapons() {
 
 // Source for file.exits
 // https://www.tutorialkart.com/kotlin/kotlin-check-if-file-exists/#gsc.tab=0
+/**
+ * Checks if the file for storing boss data exists, and loads or initializes data accordingly.
+ */
 fun checkBossesExist() {
     if (File("bosses.xml").exists()) {
         loadBosses()
@@ -238,6 +313,9 @@ fun checkBossesExist() {
     }
 }
 
+/**
+ * Checks if the file for storing weapon data exists, and loads or initializes data accordingly.
+ */
 fun checkWeaponsExist() {
     if (File("weapons.xml").exists()) {
         loadWeapons()
@@ -246,6 +324,9 @@ fun checkWeaponsExist() {
     }
 }
 
+/**
+ * Resets the data by clearing both boss and weapon information and adding default values.
+ */
 fun resetData() {
     bossAPI.reset()
     weaponAPI.reset()
@@ -253,6 +334,9 @@ fun resetData() {
     addDefaultWeapons()
 }
 
+/**
+ * Exits the application.
+ */
 fun exitApp() {
     exitProcess(0)
 }
