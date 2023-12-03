@@ -10,8 +10,19 @@ import java.io.FileWriter
 import java.lang.Exception
 import kotlin.Throws
 
+/**
+ * An implementation of the Serializer interface that uses XML for object serialization and deserialization.
+ *
+ * @param file The File object representing the file used for reading and writing data.
+ */
 class XMLSerializer(private val file: File) : Serializer {
 
+    /**
+     * Reads an object from the XML file using XStream.
+     *
+     * @return The deserialized object read from the XML file.
+     * @throws Exception If an error occurs during the reading process.
+     */
     @Throws(Exception::class)
     override fun read(): Any {
         val xStream = XStream(DomDriver())
@@ -23,6 +34,12 @@ class XMLSerializer(private val file: File) : Serializer {
         return obj
     }
 
+    /**
+     * Writes an object to the XML file using XStream.
+     *
+     * @param obj The object to be written to the XML file.
+     * @throws Exception If an error occurs during the writing process.
+     */
     @Throws(Exception::class)
     override fun write(obj: Any?) {
         val xStream = XStream(DomDriver())
