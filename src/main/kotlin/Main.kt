@@ -12,9 +12,6 @@ private val weaponAPI = WeaponAPI()
 fun main(args: Array<String>) {
     defaultBosses()
     defaultWeapons()
-    println((14.toDouble()*(28/60))*(1+(4/100)).toDouble())
-    println(14*(28/60))
-    println(28/60)
     runMenu()
 }
 
@@ -34,18 +31,21 @@ fun mainMenu() : Int {
          > ⠀         ⠀⠀⠀⠀⢀⣼⣿⣿⣇⠀⠀⠀⠀⠀
          > ⠀⠀⠀         ⢀⣤⣿⣿⣿⣿⣿⣷⣤⠀⠀⠀
          > -------------------------------------
-         > |          TERRARIA TAG APP         |
+         > |          TERRARIA TAG APP
          > -------------------------------------
-         > |   1) Bosses                       |
-         > |   2) Weapons                      |
+         > |   1) Bosses (${bossAPI.numberOfDefeatedBosses()}/${bossAPI.numberOfBosses()} Defeated)
+         > |      Next Boss: ${bossAPI.getNextBossName()}
          > -------------------------------------
-         > |   0) Exit                         |
+         > |   2) Weapons                      
+         > -------------------------------------
+         > |   0) Exit                         
          > -------------------------------------
          > ==>> """.trimMargin(">"))
     return ScannerInput.readNextInt("Please select an option",0, 2)
 }
 
 fun runMenu() {
+    bossAPI.generateNextBoss()
     do {
         val option = mainMenu()
         when (option) {
@@ -58,6 +58,7 @@ fun runMenu() {
 }
 
 fun bossMenu() : Int {
+    bossAPI.generateNextBoss()
     println(bossAPI.listBosses())
     println(""" 
          > -------------------------------------
