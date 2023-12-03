@@ -3,10 +3,10 @@ package controllers
 import models.Weapon
 import utils.Utilities
 
-class WeaponAPI(var defeatedNames: ArrayList<String>) {
+class WeaponAPI() {
     private var weapons = ArrayList<Weapon>()
     private var queryWeapons = ArrayList<Weapon>()
-    private var searchOptionAvailable = 1
+    private var searchOptionAvailable = 2
     private var searchOptionDPS = 1
 
     fun add(weapon: Weapon): Boolean {
@@ -23,17 +23,6 @@ class WeaponAPI(var defeatedNames: ArrayList<String>) {
         } else null
     }
 
-    fun listWeapons(): String =
-        if (weapons.isEmpty()) "No weapons stored"
-        else weapons.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
-
-    fun listWeaponsWithTag(tag: String): String{
-        return if (weapons.isEmpty()) "No weapons stored"
-        else if(weapons.none { it.checkTag(tag) }){
-            "No weapons with the tag $tag"
-        } else weapons.filter { it.checkTag(tag) }.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
-    }
-
     fun numberOfWeapons(): Int = weapons.size
 
     fun findWeapon(index: Int): Weapon? {
@@ -46,35 +35,39 @@ class WeaponAPI(var defeatedNames: ArrayList<String>) {
         queryWeapons = ArrayList(queryWeapons.filter { it.checkTag(tag) })
     }
 
-    fun getAvailableWeapons(){
+    fun searchAllWeapons(){
+        queryWeapons = weapons
+    }
+
+    fun searchAvailableWeapons(defeatedNames: ArrayList<String>){
         queryWeapons = ArrayList(weapons.filter {  it.checkRequirements(defeatedNames)})
     }
 
-    fun getUnavailableWeapons(){
+    fun searchUnavailableWeapons(defeatedNames: ArrayList<String>){
         queryWeapons = ArrayList(weapons.filter {  !it.checkRequirements(defeatedNames)})
     }
 
-    fun sortWeaponsByHighestDPS(){
+    fun sortSearchByHighestDPS(){
         queryWeapons.sortBy { it.calculateDPS() }
     }
 
-    fun sortWeaponsByLowestDPS(){
+    fun sortSearchByLowestDPS(){
         queryWeapons.sortByDescending { it.calculateDPS() }
     }
 
-    fun searchOptions(){
+    fun searchOptions(defeatedNames: ArrayList<String>){
 
         when(searchOptionAvailable){
-            1  -> queryWeapons = weapons
-            2  -> getAvailableWeapons()
-            3  -> getUnavailableWeapons()
+            1  -> searchAllWeapons()
+            2  -> searchAvailableWeapons(defeatedNames)
+            3  -> searchUnavailableWeapons(defeatedNames)
             else  -> queryWeapons = weapons
         }
 
         when(searchOptionDPS){
-            1  -> sortWeaponsByHighestDPS()
-            2  -> sortWeaponsByLowestDPS()
-            else  -> sortWeaponsByHighestDPS()
+            1  -> sortSearchByHighestDPS()
+            2  -> sortSearchByLowestDPS()
+            else  -> sortSearchByHighestDPS()
         }
 
     }
@@ -87,4 +80,13 @@ class WeaponAPI(var defeatedNames: ArrayList<String>) {
     fun numberOfQuery(){
         queryWeapons.size
     }
+
+    fun setSearchOptionAvailable(option: Int){
+        searchOptionAvailable = option
+    }
+
+    fun setSearchOptionDPS(option: Int){
+        searchOptionDPS = option
+    }
+
 }
