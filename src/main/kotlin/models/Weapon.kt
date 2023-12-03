@@ -12,4 +12,7 @@ data class Weapon(var name: String, var damage: Int, var criticalChance: Int, va
                   |""".trimMargin()
     }
 
+    fun checkTag(tag :String) = tags.contains(tag)
+
+    fun checkRequirements(bosses: ArrayList<String>): Boolean = requirements.count { bosses.contains(it) } == requirements.size
 }
