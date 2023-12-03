@@ -1,9 +1,13 @@
 package controllers
 
 import models.Weapon
+import persistence.Serializer
 import utils.Utilities
 
-class WeaponAPI {
+class WeaponAPI(serializerType: Serializer) {
+
+    private var serializer: Serializer = serializerType
+
     private var weapons = ArrayList<Weapon>()
     private var queryWeapons = ArrayList<Weapon>()
     private var searchOptionAvailable = 2
@@ -50,11 +54,11 @@ class WeaponAPI {
     }
 
     private fun sortSearchByHighestDPS(){
-        queryWeapons.sortBy { it.calculateDPS() }
+        queryWeapons.sortByDescending { it.calculateDPS() }
     }
 
     private fun sortSearchByLowestDPS(){
-        queryWeapons.sortByDescending { it.calculateDPS() }
+        queryWeapons.sortBy { it.calculateDPS() }
     }
 
     fun search(defeatedNames: ArrayList<String>){
@@ -79,10 +83,6 @@ class WeaponAPI {
     else if (queryWeapons.isEmpty()) "No weapons match current settings"
     else queryWeapons.withIndex().joinToString(separator = "\n") { "${it.index + 1}: ${it.value}" }
 
-    fun numberOfQuery(){
-        queryWeapons.size
-    }
-
     fun setSearchOptionAvailable(option: Int){
         searchOptionAvailable = option
     }
@@ -103,6 +103,20 @@ class WeaponAPI {
                 .maxWith(compareBy { it.calculateDPS() })
             best.name
         }
+    }
+
+    @Throws(Exception::class)
+    fun load() {
+        weapons = serializer.read() as ArrayList<Weapon>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(weapons)
+    }
+
+    fun reset(){
+        weapons.clear()
     }
 
 }

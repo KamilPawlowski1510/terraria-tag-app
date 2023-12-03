@@ -2,16 +2,18 @@ import controllers.BossAPI
 import controllers.WeaponAPI
 import models.Boss
 import models.Weapon
+import persistence.XMLSerializer
 import utils.ScannerInput
+import java.io.File
 import kotlin.system.exitProcess
 
-private val bossAPI = BossAPI()
+private val bossAPI = BossAPI(XMLSerializer(File("bosses.xml")))
 private var defeatedNames = ArrayList<String>()
-private val weaponAPI = WeaponAPI()
+private val weaponAPI = WeaponAPI(XMLSerializer(File("weapons.xml")))
 
 fun main(args: Array<String>) {
-    defaultBosses()
-    defaultWeapons()
+    checkBossesExist()
+    checkWeaponsExist()
     runMenu()
 }
 
@@ -37,12 +39,15 @@ fun mainMenu() : Int {
          > |      Next Boss: ${bossAPI.getNextBossName()}
          > -------------------------------------
          > |   2) Weapons (${weaponAPI.numberOfAvailableWeapons(defeatedNames)}/${weaponAPI.numberOfWeapons()} Available)
-         > |      Best Weapon Available: ${weaponAPI.bestAvailableWeaponName(defeatedNames)}
+         > |      Best Weapon Available: 
+         > |          ${weaponAPI.bestAvailableWeaponName(defeatedNames)}
+         > -------------------------------------
+         > |   3) Reset Data to Default
          > -------------------------------------
          > |   0) Exit                         
          > -------------------------------------
          > ==>> """.trimMargin(">"))
-    return ScannerInput.readNextInt("Please select an option",0, 2)
+    return ScannerInput.readNextInt("Please select an option",0, 6)
 }
 
 fun runMenu() {
@@ -52,6 +57,7 @@ fun runMenu() {
         when (option) {
             1  -> defeatedNames = runBossMenu()
             2  -> runWeaponMenu()
+            3  -> resetData()
             0  -> exitApp()
             else -> println("Invalid option entered: $option")
         }
@@ -95,6 +101,7 @@ fun changeBoss(){
         }
         else{
             bossAPI.toggleBoss(bossAPI.findBoss(id - 1)!!)
+            saveBosses()
         }
     }
 }
@@ -154,8 +161,8 @@ fun updateResults(){
     weaponAPI.search(defeatedNames)
 }
 
-fun defaultBosses(){
-    bossAPI.add(Boss("King Slime"))
+fun addDefaultBosses(){
+    bossAPI.add(Boss("King Slime", next = true))
     bossAPI.add(Boss("Eye of Cthulhu"))
     bossAPI.add(Boss("Eater of Worlds"))
     bossAPI.add(Boss("Brain of Cthulhu"))
@@ -163,14 +170,74 @@ fun defaultBosses(){
     bossAPI.add(Boss("Skeletron"))
     bossAPI.add(Boss("Deerclops"))
     bossAPI.add(Boss("Wall of Flesh"))
+    saveBosses()
 }
 
-fun defaultWeapons(){
+fun addDefaultWeapons(){
     weaponAPI.add(Weapon("Night's Edge", 40, 4, 25, arrayListOf("melee", "broadsword"), arrayListOf("Eater of Worlds", "Skeletron")))
     weaponAPI.add(Weapon("Valor", 28, 4, 25, arrayListOf("melee", "yo-yo", "dungeon", "underground"), arrayListOf("Skeletron")))
     weaponAPI.add(Weapon("Storm Spear", 14, 4, 28, arrayListOf("melee", "spear", "desert", "underground"), ArrayList<String>()))
     weaponAPI.add(Weapon("Ice Boomerang", 21, 6, 20, arrayListOf("melee", "boomerang", "ice", "underground"), ArrayList<String>()))
     weaponAPI.add(Weapon("Terragrim", 17, 4, 25, arrayListOf("melee", "other", "forest", "surface"), ArrayList<String>()))
+    weaponAPI.add(Weapon("Bee Keeper", 30, 4, 20, arrayListOf("melee", "broadsword", "jungle", "underground"), arrayListOf("Queen Bee")))
+    weaponAPI.add(Weapon("Copper Shortsword", 5, 4, 13, arrayListOf("melee", "shortsword", "surface"), ArrayList<String>()))
+    weaponAPI.add(Weapon("Bloody Machete", 20, 4, 15, arrayListOf("melee", "boomerang", "halloween"), ArrayList<String>()))
+    weaponAPI.add(Weapon("The Meatball", 34, 4, 45, arrayListOf("melee", "flail", "crimson"), arrayListOf("Brain of Cthulhu")))
+    weaponAPI.add(Weapon("Lucy the Axe", 27, 14, 15, arrayListOf("melee", "axe", "ice", "surface"), arrayListOf("Brain of Cthulhu")))
+    weaponAPI.add(Weapon("Breaker Blade", 70, 4, 30, arrayListOf("melee", "broadsword", "underworld"), arrayListOf("Wall of Flesh")))
+    weaponAPI.add(Weapon("Starfury", 25, 4, 20, arrayListOf("melee", "broadsword", "sky"), ArrayList<String>()))
+    saveWeapons()
+}
+
+fun saveBosses() {
+    try {
+        bossAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun loadBosses() {
+    try {
+        bossAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+
+fun saveWeapons() {
+    try {
+        weaponAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun loadWeapons() {
+    try {
+        weaponAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+
+fun checkBossesExist(){
+    if (File("bosses.xml").exists()) loadBosses()
+    else addDefaultBosses()
+
+}
+
+fun checkWeaponsExist(){
+    if (File("weapons.xml").exists()) loadWeapons()
+    else addDefaultWeapons()
+
+}
+
+fun resetData(){
+    bossAPI.reset()
+    weaponAPI.reset()
+    addDefaultBosses()
+    addDefaultWeapons()
 }
 
 fun exitApp(){
